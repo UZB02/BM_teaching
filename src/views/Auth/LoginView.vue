@@ -27,7 +27,11 @@
         </div>
         <Button label="Kirish" type="submit" class="w-full" />
       </form>
-      <span @click="router.push('/register')" class="flex items-center justify-end cursor-pointer text-emerald-500  transition duration-100 hover:scale-[1.01]">Ro'yxatdan o'tish</span>
+      <span
+        @click="router.push('/register')"
+        class="flex items-center justify-end cursor-pointer text-emerald-500 transition duration-100 hover:scale-[1.01]"
+        >Ro'yxatdan o'tish</span
+      >
     </div>
   </div>
 </template>
@@ -49,11 +53,14 @@ const login = async () => {
   try {
     const res = await axios.post('/admin/login', {
       email: email.value,
-      password: password.value
+      password: password.value,
     })
-
-    console.log(res.data)
-
+    if (res.status == 200) {
+      router.push('/')
+      setTimeout(() => {
+        window.location.reload()
+      }, 1500)
+    }
     // optional: sessionStorage yoki auth store saqlash
     sessionStorage.setItem('authToken', res.data.token)
     sessionStorage.setItem('admin', JSON.stringify(res.data.admin))
@@ -65,5 +72,4 @@ const login = async () => {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

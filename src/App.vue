@@ -6,7 +6,7 @@ import axios from 'axios'
 
 // Tokenni olib, axiosga beramiz
 const token = sessionStorage.getItem('authToken')
-axios.defaults.baseURL = 'http://localhost:5000/api'
+axios.defaults.baseURL = 'https://bm-teaching-backend.onrender.com/api'
 if (token) {
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
 }

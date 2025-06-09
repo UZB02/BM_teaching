@@ -210,6 +210,13 @@ import Dialog from 'primevue/dialog'
 import axios from 'axios'
 import formatDate from "../../utils/formatDate"
 import router from '@/router'
+const admin = ref({})
+const storedAdmin = sessionStorage.getItem('admin')
+if (storedAdmin) {
+  admin.value = JSON.parse(storedAdmin)
+}
+
+
 
 // Menularni boshqarish uchun ref obyekt
 const visible = ref(false)
@@ -251,7 +258,7 @@ const questions = ref([])
 
 const fetchQuestions = async () => {
   try {
-    const res = await axios.get('/questions')
+    const res = await axios.get(`/questions?adminId=${admin.value._id}`)
     console.log(res)
     questions.value = res.data
   } catch (err) {

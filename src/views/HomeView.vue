@@ -1,7 +1,5 @@
 <template>
-    <div class="container">
       <MainCards></MainCards>
-    </div>
 </template>
 
 <script setup>

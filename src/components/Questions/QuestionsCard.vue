@@ -1,23 +1,35 @@
 <template>
-  <div class="mx-auto">
+  <div v-if="isLoading" class="w-full h-[50vh] flex items-center justify-center">
+    <Loading></Loading>
+  </div>
+  <div v-else class="mx-auto flex flex-col gap-4">
+    <div class="header flex flex-col gap-1">
+      <label for="questionText" class="flex items-center gap-2 text-sm font-semibold text-gray-600">
+        Daraja bo'yicha filtrlash
+      </label>
+      <Select
+        v-model="selectedDegree"
+        :options="degree"
+        optionLabel="name"
+        placeholder="Darajani tanlang"
+        class="w-full md:w-56"
+      />
+    </div>
+
     <!-- Questions Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <Card
-        v-for="(item, itemKey) in questions"
+        v-for="(item, itemKey) in filteredQuestions"
         :key="item.id"
-        class="group relative overflow-hidden border-0 bg-white shadow-md hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 cursor-pointer rounded-xl"
+        class="group relative overflow-hidden border-0 bg-white shadow-md hover:shadow-2xl transition-all duration-500 transform cursor-pointer rounded-xl"
       >
         <template #content>
           <div class="relative z-10 p-5">
-            <!-- Header -->
             <div class="flex justify-between items-start mb-2">
-              <!-- Question title (badge) -->
               <Badge
                 :value="item.difficulty"
                 class="bg-blue-100 text-blue-700 font-medium px-3 py-1 rounded-full text-sm"
               />
-
-              <!-- Desktop Actions -->
               <div
                 class="hidden sm:flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
@@ -29,7 +41,6 @@
                   size="small"
                   class="w-8 h-8 hover:bg-blue-50 hover:text-blue-600"
                   v-tooltip.top="'Javobni ko‘rish'"
-                  aria-label="Javobni ko‘rish"
                 />
                 <Button
                   icon="pi pi-pencil"
@@ -39,7 +50,6 @@
                   size="small"
                   class="w-8 h-8 hover:bg-orange-50 hover:text-orange-600"
                   v-tooltip.top="'Tahrirlash'"
-                  aria-label="Tahrirlash"
                 />
                 <Button
                   icon="pi pi-trash"
@@ -49,11 +59,8 @@
                   size="small"
                   class="w-8 h-8 hover:bg-red-50 hover:text-red-600"
                   v-tooltip.top="'O‘chirish'"
-                  aria-label="O‘chirish"
                 />
               </div>
-
-              <!-- Mobile Actions -->
               <div class="sm:hidden">
                 <Button
                   type="button"
@@ -61,6 +68,7 @@
                   @click="toggle($event, item)"
                   aria-haspopup="true"
                   :aria-controls="'overlay_menu_' + item.id"
+                  size="small"
                 />
                 <Menu
                   :ref="(el) => (menuRefs[item.id] = el)"
@@ -71,7 +79,6 @@
               </div>
             </div>
 
-            <!-- Content -->
             <div class="space-y-3">
               <div class="flex items-center gap-2">
                 <div
@@ -81,7 +88,6 @@
                 </div>
                 <h3 class="text-sm font-medium text-gray-600 uppercase tracking-wide">Savol</h3>
               </div>
-
               <h2
                 class="text-lg font-semibold text-gray-900 leading-relaxed group-hover:text-blue-700 transition-colors duration-300"
               >
@@ -89,7 +95,6 @@
               </h2>
             </div>
 
-            <!-- Question Stats -->
             <div
               class="flex items-center gap-4 mt-4 pt-4 border-t border-gray-100 text-sm text-gray-500"
             >
@@ -103,7 +108,6 @@
               </div>
             </div>
 
-            <!-- Bottom accent line -->
             <div
               class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"
             ></div>
@@ -112,47 +116,36 @@
       </Card>
     </div>
   </div>
-  <!-- Begin view Info -->
- <Dialog
+
+  <!-- Info Dialog -->
+  <Dialog
     v-model:visible="visible"
     modal
     :header="false"
     :style="{ width: '50vw', maxWidth: '650px' }"
     :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
-    class="question-details-dialog"
   >
     <div class="p-4 sm:p-6">
-      <!-- Header with close button -->
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-xl font-bold text-gray-800">Savol tafsilotlari</h2>
       </div>
-      
       <div class="space-y-6">
-        <!-- Savol -->
         <div class="bg-blue-50 p-4 rounded-lg">
           <h3 class="text-sm font-semibold text-blue-600 uppercase mb-2 flex items-center">
-            <i class="pi pi-question-circle mr-2"></i>
-            Savol
+            <i class="pi pi-question-circle mr-2"></i> Savol
           </h3>
           <p class="text-lg text-gray-900 leading-relaxed">{{ question.text }}</p>
         </div>
-
-        <!-- Javob -->
         <div class="bg-green-50 p-4 rounded-lg">
           <h3 class="text-sm font-semibold text-green-600 uppercase mb-2 flex items-center">
-            <i class="pi pi-check-circle mr-2"></i>
-            Javob
+            <i class="pi pi-check-circle mr-2"></i> Javob
           </h3>
           <p class="text-base text-gray-800 leading-relaxed">{{ question.answer }}</p>
         </div>
-
-        <!-- Qo'shimcha ma'lumotlar -->
         <div class="bg-gray-50 p-4 rounded-lg">
           <h3 class="text-sm font-semibold text-gray-500 uppercase mb-3 flex items-center">
-            <i class="pi pi-info-circle mr-2"></i>
-            Qo'shimcha ma'lumotlar
+            <i class="pi pi-info-circle mr-2"></i> Qo'shimcha ma'lumotlar
           </h3>
-          
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="flex items-center p-3 bg-white rounded-md shadow-sm">
               <i class="pi pi-calendar text-blue-500 mr-3 text-lg"></i>
@@ -161,7 +154,6 @@
                 <div class="font-medium">{{ formatDate(question.createdAt) }}</div>
               </div>
             </div>
-            
             <div class="flex items-center p-3 bg-white rounded-md shadow-sm">
               <i class="pi pi-user text-green-500 mr-3 text-lg"></i>
               <div>
@@ -169,14 +161,11 @@
                 <div class="font-medium">{{ question.admin?.name || 'Admin' }}</div>
               </div>
             </div>
-            
             <div class="flex items-center p-3 bg-white rounded-md shadow-sm">
               <i class="pi pi-sitemap text-orange-500 mr-3 text-lg"></i>
               <div>
                 <div class="text-xs text-gray-500 mb-1">Qiyinlik darajasi</div>
-                <div class="font-medium">
-                   {{ question.difficulty }}
-                </div>
+                <div class="font-medium">{{ question.difficulty }}</div>
               </div>
             </div>
           </div>
@@ -184,83 +173,118 @@
       </div>
     </div>
   </Dialog>
-  <!-- End view Info -->
-  <!-- Begin Delet Modal -->
-   <Dialog v-model:visible="deletModal" modal header="Tasdiqlash" :closable="false" class="w-96">
+
+  <!-- Delete Confirmation -->
+  <Dialog v-model:visible="deletModal" modal header="Tasdiqlash" :closable="false" class="w-96">
     <div class="text-center">
       <i class="pi pi-exclamation-triangle text-yellow-500 text-4xl mb-4"></i>
       <p>Haqiqatan ham bu ma'lumotni o‘chirmoqchimisiz?</p>
     </div>
-
     <template #footer>
-      <Button label="Bekor qilish" icon="pi pi-times" class="p-button-text" @click="deletModal = false" />
-      <Button label="Ha, o'chirilsin" icon="pi pi-check" class="p-button-danger" @click="deletQuestion()" />
+      <Button
+        label="Bekor qilish"
+        icon="pi pi-times"
+        class="p-button-text"
+        @click="deletModal = false"
+      />
+      <Button
+        label="Ha, o'chirilsin"
+        icon="pi pi-check"
+        class="p-button-danger"
+        @click="deletQuestion()"
+      />
     </template>
   </Dialog>
-  <!-- End Delet Modal -->
 </template>
-
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 import Badge from 'primevue/badge'
 import Menu from 'primevue/menu'
 import Dialog from 'primevue/dialog'
+import Select from 'primevue/select'
 import axios from 'axios'
-import formatDate from "../../utils/formatDate"
 import router from '@/router'
+import formatDate from '../../utils/formatDate'
+import Loading from '../Loading/Main.vue'
+
+// Ma'lumotlar
+const isLoading = ref(true)
+const visible = ref(false)
+const deletModal = ref(false)
+const question = ref({})
+const selectedDegree = ref(null)
+const questions = ref([])
+const filteredQuestions = ref([])
+
 const admin = ref({})
 const storedAdmin = sessionStorage.getItem('admin')
 if (storedAdmin) {
   admin.value = JSON.parse(storedAdmin)
 }
 
+// Qiyinlik darajalari
+const degree = ref([
+  { name: 'Hammasi', code: null },
+  { name: 'Oson', code: 'Oson' },
+  { name: "O'rta", code: "O'rta" },
+  { name: 'Qiyin', code: 'Qiyin' },
+  { name: 'Juda qiyin', code: 'Juda qiyin' },
+])
 
+// Selectni kuzatish
+watch(selectedDegree, (newVal) => {
+  if (!newVal || !newVal.code) {
+    filteredQuestions.value = questions.value
+  } else {
+    filteredQuestions.value = questions.value.filter((q) => q.difficulty === newVal.code)
+  }
+})
 
-// Menularni boshqarish uchun ref obyekt
-const visible = ref(false)
-const question = ref({})
-const deletModal=ref(false)
+// Menu boshqaruvi
+const menuRefs = reactive({})
 const menuItems = ref([
   {
     label: 'Amallar',
     items: [
-      { label: 'Ko‘rish', icon: 'pi pi-eye', command: () => visible.value=true },
-      { label: 'Tahrirlash', icon: 'pi pi-pencil', command: () => router.push(`/questions/edit/${question.value._id}`) },
+      { label: 'Ko‘rish', icon: 'pi pi-eye', command: () => (visible.value = true) },
+      {
+        label: 'Tahrirlash',
+        icon: 'pi pi-pencil',
+        command: () => router.push(`/questions/edit/${question.value._id}`),
+      },
       { label: 'O‘chirish', icon: 'pi pi-trash', command: () => openDeletModal(question.value) },
     ],
   },
 ])
 
-const infoToogle = (item) => {
-  visible.value = true
-  question.value = item
-  console.log(item)
-}
-// Har bir Card uchun Menu referensiyalar ro'yxati
-const menuRefs = reactive({})
-
 const toggle = (event, item) => {
-  question.value=item
+  question.value = item
   if (menuRefs[item.id]) {
     menuRefs[item.id].toggle(event)
   }
 }
 
-const openDeletModal=(item)=>{
-  deletModal.value=true
-  question.value=item
+const infoToogle = (item) => {
+  visible.value = true
+  question.value = item
 }
 
-// Savollar
-const questions = ref([])
+const openDeletModal = (item) => {
+  deletModal.value = true
+  question.value = item
+}
 
+// Ma'lumotlarni olish
 const fetchQuestions = async () => {
   try {
     const res = await axios.get(`/questions?adminId=${admin.value._id}`)
-    console.log(res)
-    questions.value = res.data
+    if (res.status === 200) {
+      isLoading.value = false
+      questions.value = res.data
+      filteredQuestions.value = res.data
+    }
   } catch (err) {
     console.log(err)
   }
@@ -268,17 +292,16 @@ const fetchQuestions = async () => {
 
 fetchQuestions()
 
-const deletQuestion = async (item) => {
+// O‘chirish
+const deletQuestion = async () => {
   try {
     const res = await axios.delete(`/questions/delet/${question.value._id}`)
-    if (res.status == 200) {
+    if (res.status === 200) {
       fetchQuestions()
-      deletModal.value=false
+      deletModal.value = false
     }
   } catch (err) {
     console.log(err)
   }
 }
 </script>
-
-<style scoped></style>

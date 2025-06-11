@@ -9,6 +9,7 @@ import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
 import Tooltip from 'primevue/tooltip'
+import ToastService from 'primevue/toastservice'
 
 // Avval app ni yaratamiz
 const app = createApp(App)
@@ -26,6 +27,7 @@ app.use(PrimeVue, {
 })
 
 app.directive('tooltip', Tooltip)
+app.use(ToastService) // Toast xizmatini ulash
 
 app.use(router)
 

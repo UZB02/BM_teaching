@@ -270,7 +270,10 @@ const submitForm = async () => {
   console.log(form);
   try {
    const res= await axios.post('/optionquizs', form)
-    // resetForm()
+   if(res.status===201){
+     resetForm()
+    router.push('/optionquestions')
+   }
     console.log(res);
   } catch (err) {
     console.error('Saqlashda xatolik:', err)

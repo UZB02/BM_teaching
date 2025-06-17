@@ -216,7 +216,7 @@ fetchQuestions()
 // Delete
 const deletQuestion = async () => {
   try {
-    const res = await axios.delete(`/questions/delet/${question.value._id}`)
+    const res = await axios.delete(`/optionquizs/${question.value._id}`)
     if (res.status === 200) {
       fetchQuestions()
       deletModal.value = false

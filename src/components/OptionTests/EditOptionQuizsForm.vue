@@ -97,6 +97,7 @@ import Dropdown from 'primevue/dropdown'
 import InputNumber from 'primevue/inputnumber'
 import Button from 'primevue/button'
 
+
 const route = useRoute()
 const router = useRouter()
 const id = route.params.slug
@@ -168,7 +169,12 @@ const validateForm = () => {
 const loadQuestion = async () => {
   try {
     const res = await axios.get(`/optionquizs/${id}`)
-    // Object.assign(form, res.data)
+    form.text=res.data.text
+    form.subject=res.data.subject
+    form.difficulty=res.data.difficulty
+    form.points=res.data.points
+    form.options=res.data.options
+    form.correctAnswer=res.data.correctAnswer
     console.log(res);
   } catch (err) {
     console.error('Savolni olishda xatolik:', err)
@@ -180,7 +186,7 @@ const submitForm = async () => {
   isSubmitting.value = true
   try {
     await axios.put(`/optionquizs/${id}`, form)
-    router.push('/questions')
+    router.push('/optionquestions')
   } catch (err) {
     console.error('Yangilashda xatolik:', err)
   } finally {

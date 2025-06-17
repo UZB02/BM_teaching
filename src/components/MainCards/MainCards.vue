@@ -24,7 +24,7 @@
         <Card class="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg">
           <template #header>
             <div class="bg-gradient-to-r from-purple-500 to-purple-600 p-6 text-white rounded-t-lg">
-              <i class="pi pi-list text-3xl mb-3 block"></i>
+              <i class="pi pi-question-circle text-3xl mb-3 block"></i>
               <h3 class="text-xl font-semibold">Savollar</h3>
             </div>
           </template>
@@ -34,7 +34,7 @@
                 Bir nechta savollar tuzing.
               </p>
               <div class="flex items-center text-sm text-gray-500 mb-4">
-                <i class="pi pi-clock mr-2"></i>
+                <i class="pi pi-database mr-2"></i>
                 <span>{{ allQuestions.length!==0 ? allQuestions.length + ` ` + `ta savol` : 'Loading...'}}</span>
               </div>
               <Button 
@@ -43,6 +43,32 @@
                 icon="pi pi-arrow-right"
                 iconPos="right"
                 @click="router.push('/questions')"
+              />
+            </div>
+          </template>
+        </Card>
+        <Card
+          class="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg"
+        >
+          <template #header>
+            <div class="bg-gradient-to-r from-green-500 to-green-600 p-6 text-white rounded-t-lg">
+              <i class="pi pi-list text-3xl mb-3 block"></i>
+              <h3 class="text-xl font-semibold">Boshlash</h3>
+            </div>
+          </template>
+          <template #content>
+            <div class="p-6">
+              <p class="text-gray-600 mb-4">Savollarni variantlar bo'yicha tuzing.</p>
+              <div class="flex items-center text-sm text-gray-500 mb-4">
+                <i class="pi pi-database mr-2"></i>
+                <span>2-5 daqiqa</span>
+              </div>
+              <Button
+                label="Boshlash"
+                @click="router.push('/optionquestions')"
+                class="w-full bg-green-500 hover:bg-green-600 border-green-500 hover:border-green-600"
+                icon="pi pi-arrow-right"
+                iconPos="right"
               />
             </div>
           </template>

@@ -39,20 +39,44 @@ const router = createRouter({
       },
     },
     {
+      path: '/optionquestions',
+      name: 'Optionquestions',
+      component: () => import('../views/OptionTestsView.vue'),
+      meta: {
+        layout: AppLayout,
+      },
+    },
+    {
+      path: '/optionquestions/add',
+      name: 'Optionquestions Add',
+      component: () => import('../views/AddOptionTestsView.vue'),
+      meta: {
+        layout: AppLayout,
+      },
+    },
+    {
+      path: '/optionquestions/edit/:slug',
+      name: 'Optionquestions Edit',
+      component: () => import('../views/EditOptionsQuizView.vue'),
+      meta: {
+        layout: AppLayout,
+      },
+    },
+    {
       path: '/login',
       name: 'Login',
       component: () => import('../views/Auth/LoginView.vue'),
-      meta:{
-        layout: AuthLayout
-      }
+      meta: {
+        layout: AuthLayout,
+      },
     },
     {
       path: '/register',
       name: 'Register',
       component: () => import('../views/Auth/RegisterView.vue'),
-      meta:{
-        layout: AuthLayout
-      }
+      meta: {
+        layout: AuthLayout,
+      },
     },
   ],
 })

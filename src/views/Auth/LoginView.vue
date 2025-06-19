@@ -20,7 +20,6 @@
         </div>
         <Button :label="isLoading ? 'Loading...' : 'Kirish'" type="submit" class="w-full" />
       </form>
-      <span @click="router.push('/register')">Ro'yxatdan o'tish</span>
     </div>
   </div>
   <Toast />
